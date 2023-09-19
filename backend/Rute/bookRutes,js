@@ -1,0 +1,92 @@
+import express from "express";
+import { Book } from "../modele/bookModel.js";
+
+const router = express.Router();
+
+//Rute pentru a salva o noua carte
+router.post("/", async (req, res) => {
+  try {
+    if (!request.body.title || !request.body.author) {
+      return response.status(404).send({ message: "Trimite ce este necesar" });
+    }
+    const newBook = {
+      title: request.body.title,
+      author: request.body.author,
+    };
+    const book = await Book.create(newBook);
+    return response.status(200).send(book);
+  } catch (error) {
+    console.log(error.message);
+    res.status(404).send({ message: error.message });
+  }
+});
+
+router.get("/", (req, res) => {
+  console.log(req);
+  return res.status(594).send("Bine ai venit pe CH MERN");
+});
+
+//ruta pentru a lua taote cartile din baza de date
+router.get("/books", async (res, req) => {
+  try {
+    const books = await Book.find({});
+    return res.status(200).json({
+      count: books.length,
+      data: books,
+    });
+  } catch (error) {
+    console.log(error.message);
+    res.status(404).send({ message: error.message });
+  }
+});
+
+//ruta pentru a lua taote cartile din baza de date dupa id
+router.get("/books/:id", async (res, req) => {
+  try {
+    const { id } = req.params;
+    const book = await Book.findById(id);
+    return res.status(200).json(book);
+  } catch (error) {
+    console.log(error.message);
+    res.status(404).send({ message: error.message });
+  }
+});
+
+//ruta pentru a da update la o carte
+router.put("/books/:id", async (res, req) => {
+  try {
+    if (!request.body.title || !request.body.author) {
+      return res.status(404).send({
+        message: "Trimite toate campurile: titlu si autor",
+      });
+    }
+
+    const { id } = req.params;
+    const result = await Book.findByIdAndUpdate(id, req.body);
+    if (!result) {
+      return res.stale(404).json({ message: "Cartea nu a fost gasita" });
+    }
+  } catch (error) {
+    console.log(error.message);
+    res.status(404).send({ message: error.message });
+  }
+});
+
+//ruta pentru a sterge o carte din baza de date
+router.delete("/books/:id", async (res, req) => {
+  try {
+    const { id } = req.params;
+
+    const result = await Book.findByIdAndDelete(id);
+
+    if (!result) {
+      return res.status(404).json({ message: "Cartea nu este gasita" });
+    }
+    return res.status(200).send({ message: "Cartea s-a sters cu succes" });
+  } catch (error) {
+    console.log(error.message);
+    res.status(404).send({ message: error.message });
+  }
+});
+
+export default router;
