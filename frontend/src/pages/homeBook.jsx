@@ -44,10 +44,10 @@ function homeBook() {
         <Link to='/books/create'>
            <MdOutlineAddBox className='text-sky-800-4xl' />
         </Link>
-        {loading ? (
-          <Spinner /> ) : (
-            <BookTable books={books} />         
-        )}
+        {loading ? 
+          <Spinner />  :  ShowType === 'table' ? (
+            <BookTable books={books} /> ) : (<BookCards books={books} />)         
+        }
       </div>
     </div>
   )
